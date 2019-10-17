@@ -15,7 +15,7 @@ class Auth extends REST_Controller
         // Construct the parent class
         parent::__construct();
 
-        $this->load->model(array('Auth_model', 'General_model', 'Partner_model'));
+//        $this->load->model(array('Auth_model', 'General_model', 'Partner_model'));
 
         // Configure limits on our controller methods
         // Ensure you have created the 'limits' table and enabled 'limits' within application/config/rest.php
@@ -194,7 +194,7 @@ class Auth extends REST_Controller
 
     public function test_get()
     {
-        $this->response("API is online", REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+        $this->response("API is ON", REST_Controller::HTTP_OK);
     }
 
 }

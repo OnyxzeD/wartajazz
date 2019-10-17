@@ -26,7 +26,7 @@ class Auth_model extends CI_Model
 
     function get($username)
     {
-        $query = $this->db->where('Name', $username)->get('users');
+        $query = $this->db->where('username', $username)->get('users');
         return $query->row_array();
     }
 
@@ -67,55 +67,23 @@ class Auth_model extends CI_Model
     {
         $cek = $this->get($username);
         $result['Status'] = 'error';
+
         if ($cek) {
-            if (password_verify($password, $cek['Password'])) {
+            if (password_verify($password, $cek['password'])) {
                 // Aktif
-                if ($cek['Status'] != 13) {
-                    if ($type == 'mobile') {
-                        $this->db->join('customer', 'users.Source_Id = customer.Id_Customer');
-                        $this->db->select('users.*,customer.nama Cust_Name, customer.telp');
-                        $this->db->from('users');
-                        $this->db->where('Id', $cek['Id']);
-                        $query = $this->db->get();
+                $this->db->join('user_bio', 'users.username = user_bio.username');
+                $this->db->select('users.*, user_bio.*');
+                $this->db->from('users');
+                $this->db->where('users.username', $cek['username']);
+                $query = $this->db->get();
 
-                        $result['Data'] = $query->row_array();
-                    } else {
-                        if ($cek['Type'] == 1) {
-                            $this->db->join('partner', 'users.Source_Id = partner.ID_Partner');
-                            $this->db->select('users.*, partner.Nama User_Name, partner.Logo Picture');
-                        } else if ($cek['Type'] == 2) {
-                            $this->db->join('manager', 'users.Source_Id = manager.Id_Manager');
-                            $this->db->select('users.*, manager.Nama User_Name, manager.Photo Picture');
-                        } else if ($cek['Type'] == 3) {
-                            $this->db->join('customer', 'users.Source_Id = customer.Id_Customer');
-                            $this->db->select('users.*, customer.Nama User_Name, customer.Photo Picture');
-                        } else {
-                            $this->db->select('users.*, users.Name User_Name, users.Source_Id Picture');
-                        }
-                        $this->db->from('users');
-                        $this->db->where('Id', $cek['Id']);
-                        $query = $this->db->get();
-
-                        $result['Data'] = $query->row_array();
-
-                        // set session
-                        $_SESSION['Account']['Id'] = $result['Data']['Id'];
-                        $_SESSION['Account']['Name'] = $result['Data']['User_Name'];
-                        $_SESSION['Account']['Type'] = $result['Data']['Type'];
-                        $_SESSION['Account']['Status'] = $result['Data']['Status'];
-                        $_SESSION['Account']['Picture'] = $result['Data']['Picture'];
-                        $_SESSION['Account']['created_at'] = $result['Data']['created_at'];
-                    }
-
-                    $result['Status'] = 'success';
-                    $result['Msg'] = 'Login berhasil';
-                } // Belum confirm email
-                else if ($cek['Status'] == -1) {
-                    $result['Msg'] = 'Email belum dikonfirmasi. Silahkan cek email anda.';
-                } //
-                else if ($cek['Status'] == 13) {
-                    $result['Msg'] = 'Akun anda telah dibekukan.';
-                }
+                $result['Data'] = $query->row_array();
+                $result['Status'] = 'success';
+                // set session
+                $this->session->set_userdata('username', $username);
+                $this->session->set_userdata('level', $result['Data']['role_id']);
+                $this->session->set_userdata('name', $result['Data']['first_name'] . ' ' . $result['Data']['last_name']);
+                $this->session->set_userdata('join_date', $result['Data']['join_date']);
             } else {
                 $result['Msg'] = 'Username atau password tidak sesuai.';
             }
@@ -245,12 +213,12 @@ class Auth_model extends CI_Model
                 $this->db->where('Id', $Id);
                 $save = $this->db->delete('users');
 
-				if ($save) {
-					$result = ['Status' => 'success', 'Msg' => 'Data Berhasil Dihapus'];
-				} else {
-					$result = ['Status' => 'error', 'Msg' => 'Proses Gagal'];
-				}
-				return $result;
+                if ($save) {
+                    $result = ['Status' => 'success', 'Msg' => 'Data Berhasil Dihapus'];
+                } else {
+                    $result = ['Status' => 'error', 'Msg' => 'Proses Gagal'];
+                }
+                return $result;
             }
         }
     }
@@ -264,19 +232,21 @@ class Auth_model extends CI_Model
         return $this->db->count_all_results();
     }
 
-    public function getNewpartners(){
-    	$this->db->where('Type', 1);
-    	$this->db->where('created_at >', date("Y-m") . "-01 00:00:00");
-    	$this->db->where('created_at <', date("Y-m-t", strtotime(date("Y-m-d"))) . " 23:59:59");
-    	$this->db->from('users');
-    	return $this->db->count_all_results();
-	}
+    public function getNewpartners()
+    {
+        $this->db->where('Type', 1);
+        $this->db->where('created_at >', date("Y-m") . "-01 00:00:00");
+        $this->db->where('created_at <', date("Y-m-t", strtotime(date("Y-m-d"))) . " 23:59:59");
+        $this->db->from('users');
+        return $this->db->count_all_results();
+    }
 
-	public function getTopup(){
-    	$this->db->where('Status', 2);
-		$this->db->where('Tgl_Transaksi >', date("Y-m") . "-01 00:00:00");
-		$this->db->where('Tgl_Transaksi <', date("Y-m-t", strtotime(date("Y-m-d"))) . " 23:59:59");
-    	$this->db->from('topup');
-    	return $this->db->count_all_results();
-	}
+    public function getTopup()
+    {
+        $this->db->where('Status', 2);
+        $this->db->where('Tgl_Transaksi >', date("Y-m") . "-01 00:00:00");
+        $this->db->where('Tgl_Transaksi <', date("Y-m-t", strtotime(date("Y-m-d"))) . " 23:59:59");
+        $this->db->from('topup');
+        return $this->db->count_all_results();
+    }
 }
