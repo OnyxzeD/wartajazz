@@ -192,4 +192,9 @@ class Auth extends REST_Controller
         }
     }
 
+    public function test_get()
+    {
+        $this->response("API is online", REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+    }
+
 }
