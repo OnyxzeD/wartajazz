@@ -15,10 +15,12 @@ class Auth_model extends CI_Model
         $this->load->model('General_model');
     }
 
-    public function detail($id)
+    public function detail($username)
     {
+        $this->db->join('user_bio', 'users.username = user_bio.username');
+        $this->db->select('users.*, user_bio.*');
         $this->db->from('users');
-        $this->db->where('Id', $id);
+        $this->db->where('users.username', $username);
         $query = $this->db->get();
 
         return $query->row_array();
@@ -28,39 +30,6 @@ class Auth_model extends CI_Model
     {
         $query = $this->db->where('username', $username)->get('users');
         return $query->row_array();
-    }
-
-    public function listData()
-    {
-        $this->db->select('*');
-        $this->db->order_by('Id', 'ASC');
-        $this->db->from('users');
-        $query = $this->db->get();
-
-        $result = [];
-        $data = $query->result_array();
-        foreach ($data as $dt) {
-            if ($dt['Type'] == 1) {
-                $this->db->where('ID_Partner', $dt['Source_Id']);
-                $query = $this->db->get('partner');
-                $office = $query->row_array()['Nama'];
-            } else if ($dt['Type'] == 2) {
-                $this->db->join('outlet', 'outlet.ID_Outlet = manager.Outlet_Id');
-                $this->db->join('partner', 'partner.ID_Partner = outlet.Partner_Id');
-                $this->db->select('partner.Nama');
-                $this->db->where('Id_Manager', $dt['Source_Id']);
-                $query = $this->db->get('manager');
-                $office = $query->row_array()['Nama'];
-            } else if ($dt['Type'] == 3) {
-                $office = "Customer";
-            } else {
-                $office = "Administrator";
-            }
-            $dt['Office'] = $office;
-            $result[] = $dt;
-        }
-
-        return $result;
     }
 
     public function LoginCheck($username, $password, $type = 'web')
@@ -82,7 +51,7 @@ class Auth_model extends CI_Model
                 // set session
                 $this->session->set_userdata('username', $username);
                 $this->session->set_userdata('level', $result['Data']['role_id']);
-                $this->session->set_userdata('name', $result['Data']['first_name'] . ' ' . $result['Data']['last_name']);
+                $this->session->set_userdata('name', $result['Data']['fullname']);
                 $this->session->set_userdata('join_date', $result['Data']['join_date']);
             } else {
                 $result['Msg'] = 'Username atau password tidak sesuai.';
@@ -94,48 +63,35 @@ class Auth_model extends CI_Model
         return $result;
     }
 
-    public function register($dt, $type = 'Customer')
+    public function register($data, $role = 2)
     {
-
-        if ($type == 'Customer') {
-            $id = $this->General_model->getNoUrut('customer', 'Id_Customer', 'CS');
-        } else {
-            $id = $this->General_model->getNoUrut('manager', 'Id_Manager', 'MGR');
-        }
-
-        $data = array(
-            'Name'       => $dt['username'],
-            'Email'      => $dt['email'],
-            'Password'   => password_hash($dt['password'], PASSWORD_DEFAULT),
-            'Type'       => $dt['type'],
-            'Source_Id'  => $id,
-            'Status'     => 0,
-            'Token'      => $dt['token'],
-            'created_at' => date("Y-m-d H:i:s")
+        $data_user = array(
+            'username' => $data['username'],
+            'email'    => $data['email'],
+            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+            'role_id'  => $role,
+            'status'   => 1
         );
-        $save = $this->db->insert('users', $data);
+
+        $save = $this->db->insert('users', $data_user);
 
         if ($save) {
-            if ($type == 'Customer') {
-                $data2 = array(
-                    'Id_Customer' => $id,
-                    'Nama'        => $dt['fullname'],
-                    'Telp'        => $dt['phone'],
-                    'Saldo'       => 10000
-                );
-                $saveSource = $this->db->insert('customer', $data2);
-            } else {
-                $data2 = array(
-                    'Id_Manager' => $id,
-                    'Nama'       => $dt['fullname'],
-                    'Telp'       => $dt['phone'],
-                    'Photo'      => $dt['photo'],
-                    'Outlet_Id'  => $dt['outlet_id']
-                );
-                $saveSource = $this->db->insert('manager', $data2);
-            }
+            $data_bio = array(
+                'username'     => $data['username'],
+                'fullname'     => $data['fullname'],
+                'phone_number' => $data['phone_number'],
+                'address'      => $data['address'],
+                'join_date'    => date("Y-m-d H:i:s")
+            );
 
-            if ($saveSource) {
+            if ($role > 2) {
+                $data_bio['device_token'] = $data['device_token'];
+                $data_bio['provider_id'] = $data['provider_id'];
+                $data_bio['thumbnail'] = $data['thumbnail'];
+            }
+            $save_bio = $this->db->insert('user_bio', $data_bio);
+
+            if ($save_bio) {
                 return true;
             } else {
                 return false;
@@ -143,6 +99,42 @@ class Auth_model extends CI_Model
         } else {
             return false;
         }
+
+    }
+
+    public function update($data)
+    {
+        // validasi inputan
+//        $this->validate();
+        // jika inputan salah
+        /*if ($this->form_validation->run() == FALSE) {
+            $result = ['Status' => 'error', 'Msg' => $this->form_validation->validation_errors_remaster()];
+        } else {*/
+            $this->db->set('role_id', $data['role_id']);
+            $this->db->set('email', $data['email']);
+            if ($data['password'] != null || $data['password'] != ''){
+                $this->db->set('password', password_hash($data['password'], PASSWORD_DEFAULT));
+            }
+            $this->db->where('username', $data['username']);
+            $this->db->update('users');
+
+            $result = ['error' => true, 'message' => 'Proses Gagal'];
+            if ($this->db->affected_rows() > 0) {
+
+                $this->db->set('fullname', $data['fullname']);
+                $this->db->set('phone_number', $data['phone_number']);
+                $this->db->set('address', $data['address']);
+                $this->db->set('thumbnail', $data['thumbnail']);
+                $this->db->set('provider_id', $data['provider_id']);
+                $this->db->set('device_token', $data['device_token']);
+                $this->db->where('username', $data['username']);
+                $this->db->update('user_bio');
+
+                $result = ['error' => false, 'message' => 'Data Berhasil Diubah'];
+            }
+//        }
+
+        return $result;
     }
 
     public function checkAccount($user, $activation)
@@ -200,53 +192,71 @@ class Auth_model extends CI_Model
         }
     }
 
-    public function delete($Id)
+    public function delete($username)
     {
-        $query = $this->detail($Id);
+        $this->db->join('user_bio', 'users.username = user_bio.username');
+        $this->db->where_in('username', $username);
+        $this->db->delete(array('users', 'user_bio'));
 
-        if ($query) {
-            $this->db->where('Id_Customer', $query['Source_Id']);
-            $delCustomer = $this->db->delete('customer');
-
-            if ($delCustomer) {
-
-                $this->db->where('Id', $Id);
-                $save = $this->db->delete('users');
-
-                if ($save) {
-                    $result = ['Status' => 'success', 'Msg' => 'Data Berhasil Dihapus'];
-                } else {
-                    $result = ['Status' => 'error', 'Msg' => 'Proses Gagal'];
-                }
-                return $result;
-            }
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
-    public function getNewcomers()
+    public function googleAuth($providerId, $email, $displayName, $thumb)
     {
-        $this->db->where('Type', 3);
-        $this->db->where('created_at >', date("Y-m") . "-01 00:00:00");
-        $this->db->where('created_at <', date("Y-m-t", strtotime(date("Y-m-d"))) . " 23:59:59");
-        $this->db->from('users');
-        return $this->db->count_all_results();
+        $this->db->join('user_bio', 'users.username = user_bio.username');
+        $this->db->where('users.email', $email);
+        $this->db->where('user_bio.provider_id', $providerId);
+        $query = $this->db->get('users');
+        $data = $query->row_array();
+
+        if ($data == null) {
+            $name = $dt = explode(" ", $displayName);
+            $data = [
+                'username'     => strtolower($name[0]),
+                'password'     => "-",
+                'email'        => $email,
+                'fullname'     => $displayName,
+                'phone_number' => "-",
+                'address'      => "-",
+                'provider_id'  => $providerId,
+                'thumbnail'    => $thumb
+            ];
+            $register = $this->register($data, 3);
+            if ($register) {
+                return $this->login(strtolower($name[0]), '-');
+            }
+        }
+
+        $result = [
+            'error'   => false,
+            'message' => 'Login succeeded',
+            'user'    => [
+                'user_id'      => (int)$data['user_id'],
+                'email'        => $data['email'],
+                'fullname'     => $displayName,
+                'phone_number' => $data['phone_number'],
+                'join_date'    => convertDate($data['join_date'], 'indo'),
+                'role'         => (int)$data['role_id'],
+                'thumbnail'    => $data['thumbnail']
+            ]
+
+        ];
+
+        return $result;
     }
 
-    public function getNewpartners()
+    public function userList()
     {
-        $this->db->where('Type', 1);
-        $this->db->where('created_at >', date("Y-m") . "-01 00:00:00");
-        $this->db->where('created_at <', date("Y-m-t", strtotime(date("Y-m-d"))) . " 23:59:59");
+        $this->db->join('user_bio', 'users.username = user_bio.username');
+        $this->db->join('role', 'users.role_id = role.role_id');
+        $this->db->select('users.*, user_bio.*, role.role_name');
         $this->db->from('users');
-        return $this->db->count_all_results();
-    }
-
-    public function getTopup()
-    {
-        $this->db->where('Status', 2);
-        $this->db->where('Tgl_Transaksi >', date("Y-m") . "-01 00:00:00");
-        $this->db->where('Tgl_Transaksi <', date("Y-m-t", strtotime(date("Y-m-d"))) . " 23:59:59");
-        $this->db->from('topup');
-        return $this->db->count_all_results();
+        $this->db->where('users.role_id <>', 0);
+        $query = $this->db->get();
+        return $query->result_array();
     }
 }

@@ -98,13 +98,14 @@ class Auth extends REST_Controller
         $fullname = $this->post('fullname');
         $phone = $this->post('phone');
         $data = [
-            'username' => $username,
-            'password' => $password,
-            'email'    => $email,
-            'fullname' => $fullname,
-            'phone'    => $phone,
-            'type'     => 3,
-            'token'    => $this->General_model->activationCode()
+            'username'     => $username,
+            'password'     => $password,
+            'email'        => $email,
+            'fullname'     => $fullname,
+            'phone'        => $phone,
+            'device_token' => $this->post('device_token'),
+            'type'         => 3,
+            'token'        => $this->General_model->activationCode()
         ];
 
         $this->load->library('form_validation');

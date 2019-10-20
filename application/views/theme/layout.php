@@ -32,6 +32,9 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
           href="<?= base_url('assets/'); ?>bower_components/bootstrap-daterangepicker/daterangepicker.css">
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="<?= base_url('assets/'); ?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet"
+          href="<?= base_url('assets/') ?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -76,6 +79,33 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
         </section>
         <!-- /.content -->
     </div>
+
+    <!-- Free Modal -->
+    <div id="FreeModal"></div>
+
+    <!-- Modal Alert-->
+    <div class="modal fade" id="modal_alert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modal_alert_label" class="text-left">Modal title</h4>
+                </div>
+                <div class="modal-body" id="modal_alert_content">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-blue btn-ok" data-dismiss="modal"><i class="fa fa-check"></i>
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Free Modal -->
+
     <!-- /.content-wrapper -->
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
@@ -89,6 +119,12 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
+
+<script>
+    var baseurl = '<?= base_url() ?>';
+    var Controller = '<?= $this->router->fetch_class(); ?>';
+    var Method = '<?= $this->router->fetch_method(); ?>';
+</script>
 
 <!-- jQuery 3 -->
 <script src="<?= base_url('assets/'); ?>bower_components/jquery/dist/jquery.min.js"></script>
@@ -127,5 +163,18 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
 <script src="<?= base_url('assets/'); ?>dist/js/pages/dashboard.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="<?= base_url('assets/'); ?>dist/js/demo.js"></script>
+<!-- DataTables -->
+<script src="<?= base_url('assets/') ?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<?= base_url('assets/') ?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- Block UI -->
+<script src="<?= base_url('assets/dist/js/') ?>jquery-blockui/jquery.blockui.min.js"></script>
+<!-- Custom JS -->
+<script src="<?= base_url('assets/') ?>dist/js/app.js"></script>
+<script src="<?php echo $JScript ?>"></script>
+<script>
+    $(function () {
+        $('#dtDef').DataTable();
+    })
+</script>
 </body>
 </html>

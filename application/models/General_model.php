@@ -46,4 +46,15 @@ class General_model extends CI_Model
     {
         return md5(rand(0, 100000));
     }
+
+    public function getData($table, $where = null)
+    {
+        $this->db->select('*');
+        $this->db->from($table);
+        if ($where != null){
+            $this->db->where($where);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 }
