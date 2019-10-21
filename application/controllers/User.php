@@ -107,7 +107,7 @@ class User extends CI_Controller
     public function modalDelete($username)
     {
         $data = $this->Auth_model->detail($username);
-        $vars['data'] = "Users " . $data['fullname'];
+        $vars['data'] = "Users <strong> " . $data['fullname'] . ' </strong>';
         $this->load->view('modals/modal-delete', $vars);
     }
 

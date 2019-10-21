@@ -35,6 +35,10 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
     <!-- DataTables -->
     <link rel="stylesheet"
           href="<?= base_url('assets/') ?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link rel="stylesheet" href="<?= base_url('assets/') ?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="<?= base_url('assets/') ?>bower_components/select2/dist/css/select2.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -168,13 +172,64 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
 <script src="<?= base_url('assets/') ?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <!-- Block UI -->
 <script src="<?= base_url('assets/dist/js/') ?>jquery-blockui/jquery.blockui.min.js"></script>
+<!-- Bootstrap WYSIHTML5 -->
+<script src="<?= base_url('assets/') ?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
 <!-- Custom JS -->
 <script src="<?= base_url('assets/') ?>dist/js/app.js"></script>
+<!-- Select2 -->
+<script src="<?= base_url('assets/') ?>bower_components/select2/dist/js/select2.full.min.js"></script>
 <script src="<?php echo $JScript ?>"></script>
 <script>
     $(function () {
         $('#dtDef').DataTable();
+
+        //bootstrap WYSIHTML5 - text editor
+        $('.wysiwyg').wysihtml5();
+
+        //Initialize Select2 Elements
+        $('.select2').select2();
     })
+
+    // validate number input
+    function validateNumber(e) {
+        if ($.inArray(e.keyCode, [8, 9, 35, 36, 37, 38, 39, 40, 46]) !== -1 || e.ctrlKey === true ||
+            // Allow: home, end, left, right, down, up
+            (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105)) {
+            // let it happen, don't do anything
+            return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    }
+
+    function Postsubmit(resp) {
+        $.unblockUI();
+        if (resp.error == true) {
+            $('#modal_alert_label').empty().append('<span style="color:red"><i class="fa fa-exclamation-triangle"></i> Kesalahan</span>');
+            $('#modal_alert_content').empty().append(resp.message);
+            $('#modal_alert').modal();
+        } else {
+            $('#modal_alert_label').empty().append('<span style="color:green"><i class="fa fa-exclamation-triangle"></i> Berhasil</span>');
+            $('#modal_alert_content').empty().append(resp.message);
+            $('#modal_alert').modal();
+            location.reload();
+        }
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#preview').attr('src', e.target.result);
+                $('#preview').attr('style', "width: 300px; height: auto");
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 </body>
 </html>

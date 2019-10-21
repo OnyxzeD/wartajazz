@@ -2,59 +2,65 @@
     <div class="box-header with-border">
         <h3 class="box-title">Daftar Berita</h3>
     </div>
+
     <!-- /.box-header -->
     <div class="box-body">
-<!--        <div style="margin-bottom: 10px">-->
-<!--            <button type="button" class="btn btn-info x_BM_GetForm_AjaxSubmit"-->
-<!--                    x-targeturl="--><?//= 'Admin/Users/modalCreate' ?><!--"-->
-<!--                    x-submiturl="--><?//= 'Admin/Users/create' ?><!--"-->
-<!--                    x-title="Tambah Users" x-presubmit="cekInput"-->
-<!--                    x-onshown="" x-postsubmit="x_BM_PostSubmit_Default">-->
-<!--                <i class="fa fa-plus"></i> &nbsp; Tambah-->
-<!--            </button>-->
-<!--        </div>-->
+        <?php if ($this->session->flashdata('warning')) { ?>
+            <div class="alert alert-warning alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-warning"></i> Perhatian!</h4>
+                <?= $this->session->flashdata('warning'); ?>
+            </div>
+        <?php }
+        if ($this->session->flashdata('sukses')) { ?>
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-check"></i> Sukses!</h4>
+                <?= $this->session->flashdata('sukses'); ?>
+            </div>
+        <?php } ?>
+
+        <div style="margin-bottom: 10px">
+            <a href="<?= base_url('news/add') ?>" class="btn btn-info">
+                <i class="fa fa-plus"></i> &nbsp; Tambah
+            </a>
+        </div>
         <div class="table-responsive">
             <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                    <th>Username</th>
-                    <th>Alamat Email</th>
-                    <th>Type</th>
-                    <th>Nama Usaha</th>
-                    <th>Status</th>
+                    <th>Judul</th>
+                    <th>Tgl Terbit</th>
+                    <th>Author</th>
+                    <th>Tags</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-<!--                --><?php
-//                $type = ["Developer", "Pemilik", "Manajer Outlet", "Customer"];
-//                $status = ["Daftar Baru", "Aktif", "Dokumen Belum Lengkap"];
-//                foreach ($Data as $row) { ?>
-<!--                    <tr>-->
-<!--                        <td>--><?//= $row['Name']; ?><!--</td>-->
-<!--                        <td>--><?//= $row['Email']; ?><!--</td>-->
-<!--                        <td>--><?//= $type[$row['Type']]; ?><!--</td>-->
-<!--                        <td>--><?//= $row['Office']; ?><!--</td>-->
-<!--                        <td>--><?//= $status[$row['Status']]; ?><!--</td>-->
-<!--                        <td>-->
-<!--                            <button type="button" class="btn btn-info x_BM_GetForm_AjaxSubmit"-->
-<!--                                    x-targeturl="--><?//= 'Admin/User/modalDetail/' . $row['Id'] ?><!--"-->
-<!--                                    x-okbtn="false"-->
-<!--                                    x-title="Detail User" data-toggle="tooltip" data-placement="top"-->
-<!--                                    title="Detail Data">-->
-<!--                                <i class="fa fa-eye"></i>-->
-<!--                            </button> &nbsp;-->
-<!--                            <button class="btn btn-danger x_BM_GetForm_AjaxSubmit"-->
-<!--                                    x-targeturl="--><?//= 'Admin/User/modalDelete/' . $row['Id'] ?><!--"-->
-<!--                                    x-submiturl="--><?//= 'Admin/User/delete/' . $row['Id'] ?><!--"-->
-<!--                                    x-title="Hapus Data" x-width="600px"-->
-<!--									x-postsubmit="x_BM_PostSubmit_Default" data-toggle="tooltip" data-placement="top"-->
-<!--                                    title="Hapus Data">-->
-<!--                                <i class="fa fa-trash"></i>-->
-<!--                            </button>-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                --><?php //} ?>
+                <?php
+                foreach ($data as $row) { ?>
+                    <tr>
+                        <td><?= $row['title']; ?></td>
+                        <td><?= convertDate($row['created_at'], 'indo'); ?></td>
+                        <td><?= $row['fullname']; ?></td>
+                        <td><?= $row['tags']; ?></td>
+                        <td>
+                            <a href="<?= 'news/detail/' . $row['url'] ?>" class="btn btn-info"
+                               data-toggle="tooltip" data-placement="top"
+                               title="Detail Data">
+                                <i class="fa fa-eye"></i>
+                            </a> &nbsp;
+                            <button class="btn btn-danger x_BM_GetForm_AjaxSubmit"
+                                    x-targeturl="<?= 'news/modalDelete/' . $row['url'] ?>"
+                                    x-submiturl="<?= 'news/delete/' . $row['url'] ?>"
+                                    x-title=" Hapus Data" x-width="600px"
+                                    x-postsubmit="Postsubmit" data-toggle="tooltip" data-placement="top"
+                                    title="Hapus Data">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                <?php } ?>
             </table>
         </div>
     </div>
