@@ -13,9 +13,9 @@ class Dashboard extends CI_Controller
     public function index()
     {
         if ($this->session->userdata('username')) {
-            $vars['header'] = 'Partner';
+            $vars['header'] = 'Dashboard';
             $vars['View'] = 'pages/dashboard';
-//            $vars['JScript'] = base_url('assets/office/js/Partner/Outlet.js');
+            $vars['JScript'] = '';
             $this->load->view('theme/layout', $vars);
         } else {
             $this->load->view('pages/login');

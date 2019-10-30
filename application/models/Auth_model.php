@@ -26,7 +26,7 @@ class Auth_model extends CI_Model
         return $query->row_array();
     }
 
-    function get($username)
+    public function get($username)
     {
         $query = $this->db->where('username', $username)->get('users');
         return $query->row_array();
@@ -286,6 +286,15 @@ class Auth_model extends CI_Model
         $this->db->from('users');
         $this->db->where('users.role_id <>', 0);
         $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function getAllToken()
+    {
+        $this->db->select('users.token');
+        $this->db->from('users');
+        $query = $this->db->get();
+
         return $query->result_array();
     }
 }
