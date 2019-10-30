@@ -32,32 +32,41 @@ class Auth_model extends CI_Model
         return $query->row_array();
     }
 
-    public function LoginCheck($username, $password, $type = 'web')
+    public function LoginCheck($username, $password, $type = 'web', $token)
     {
         $cek = $this->get($username);
-        $result['Status'] = 'error';
+        $result['error'] = true;
 
         if ($cek) {
             if (password_verify($password, $cek['password'])) {
-                // Aktif
+
+                if ($type == 'mobile'){
+                    $this->db->set('token', $token);
+                    $this->db->where('username', $username);
+                    $this->db->update('users');
+                }
+
                 $this->db->join('user_bio', 'users.username = user_bio.username');
                 $this->db->select('users.*, user_bio.*');
                 $this->db->from('users');
                 $this->db->where('users.username', $cek['username']);
                 $query = $this->db->get();
 
-                $result['Data'] = $query->row_array();
-                $result['Status'] = 'success';
+                $result['error'] = false;
+                $result['msg'] = 'Welcome';
+                $result['data'] = $query->row_array();
                 // set session
                 $this->session->set_userdata('username', $username);
-                $this->session->set_userdata('level', $result['Data']['role_id']);
-                $this->session->set_userdata('name', $result['Data']['fullname']);
-                $this->session->set_userdata('join_date', $result['Data']['join_date']);
+                $this->session->set_userdata('level', $result['data']['role_id']);
+                $this->session->set_userdata('name', $result['data']['fullname']);
+                $this->session->set_userdata('join_date', $result['data']['join_date']);
             } else {
-                $result['Msg'] = 'Username atau password tidak sesuai.';
+                $result['msg'] = 'Username atau password tidak sesuai.';
+                $result['data'] = null;
             }
         } else {
-            $result['Msg'] = 'Username atau password tidak sesuai.';
+            $result['msg'] = 'Username tidak ditemukan.';
+            $result['data'] = null;
         }
 
         return $result;
@@ -85,7 +94,6 @@ class Auth_model extends CI_Model
             );
 
             if ($role > 2) {
-                $data_bio['device_token'] = $data['device_token'];
                 $data_bio['provider_id'] = $data['provider_id'];
                 $data_bio['thumbnail'] = $data['thumbnail'];
             }
@@ -133,6 +141,27 @@ class Auth_model extends CI_Model
                 $result = ['error' => false, 'message' => 'Data Berhasil Diubah'];
             }
 //        }
+
+        return $result;
+    }
+
+    public function edit($data)
+    {
+        $this->db->set('password', password_hash($data['password'], PASSWORD_DEFAULT));
+        $this->db->where('username', $data['username']);
+        $this->db->update('users');
+
+        $result = ['error' => true, 'message' => 'Proses Gagal'];
+        if ($this->db->affected_rows() > 0) {
+
+            $this->db->set('fullname', $data['fullname']);
+            $this->db->set('phone_number', $data['phone_number']);
+            $this->db->set('address', $data['address']);
+            $this->db->where('username', $data['username']);
+            $this->db->update('user_bio');
+
+            $result = ['error' => false, 'message' => 'Data Berhasil Diubah'];
+        }
 
         return $result;
     }
