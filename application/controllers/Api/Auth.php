@@ -204,7 +204,8 @@ class Auth extends REST_Controller
 
         $this->load->library('form_validation');
 
-        $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]');
+        $this->form_validation->set_rules('username', 'Username', 'required');
+        $this->form_validation->set_rules('password', 'Password', 'min_length[6]');
         $this->form_validation->set_rules('fullname', 'Name', 'required|min_length[3]');
         $this->form_validation->set_rules('phone', 'Phone', 'required|numeric|min_length[10]|max_length[12]');
         $this->form_validation->set_rules('address', 'Address', 'required|min_length[4]');
