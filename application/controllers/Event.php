@@ -1,14 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class News extends CI_Controller
+class Event extends CI_Controller
 {
 
     public function __construct()
     {
         parent::__construct();
+
+//        $this->load->model(array('Event_model', 'General_model'));
         if ($this->session->userdata('username')) {
-            $this->load->model(array('News_model', 'General_model'));
+            $this->load->model(array('Event_model', 'General_model'));
         } else {
             redirect(base_url('/'));
         }
@@ -17,8 +19,8 @@ class News extends CI_Controller
     public function index()
     {
         $vars['header'] = '';
-        $vars['View'] = 'news/list';
-        $vars['data'] = $this->News_model->getData();
+        $vars['View'] = 'event/list';
+        $vars['data'] = $this->Event_model->getData();
 //        $vars['JScript'] = base_url('assets/office/js/Partner/Outlet.js');
         $vars['JScript'] = '';
         $this->load->view('theme/layout', $vars);
@@ -27,9 +29,9 @@ class News extends CI_Controller
     public function add()
     {
         $vars['header'] = '';
-        $vars['View'] = 'news/add';
-//            $vars['JScript'] = base_url('assets/office/js/Partner/Outlet.js');
-        $vars['JScript'] = '';
+        $vars['View'] = 'event/add';
+        $vars['artists'] = $this->General_model->getData('artist');
+        $vars['JScript'] = base_url('assets/dist/js/Event.js');
         $this->load->view('theme/layout', $vars);
     }
 
@@ -84,18 +86,21 @@ class News extends CI_Controller
         }
     }
 
-    public function detail($url)
+    public function detail($id)
     {
         $vars['header'] = '';
-        $vars['View'] = 'news/detail';
-        $vars['data'] = $this->News_model->detail($url);
+        $vars['View'] = 'event/detail';
+        $vars['data'] = $this->Event_model->detail($id);
 //            $vars['JScript'] = base_url('assets/office/js/Partner/Outlet.js');
         $vars['JScript'] = '';
+
+        /*echo "<pre>";
+        print_r($vars['data']);*/
 
         if ($vars['data'] != null) {
             $this->load->view('theme/layout', $vars);
         } else {
-            redirect(base_url('news'));
+            redirect(base_url('event'));
         }
     }
 

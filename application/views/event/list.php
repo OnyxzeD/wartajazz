@@ -1,6 +1,6 @@
 <div class="box box-primary">
     <div class="box-header with-border">
-        <h3 class="box-title">Daftar Berita</h3>
+        <h3 class="box-title">Daftar Event</h3>
     </div>
 
     <!-- /.box-header -->
@@ -21,7 +21,7 @@
         <?php } ?>
 
         <div style="margin-bottom: 10px">
-            <a href="<?= base_url('news/add') ?>" class="btn btn-info">
+            <a href="<?= base_url('event/add') ?>" class="btn btn-info">
                 <i class="fa fa-plus"></i> &nbsp; Tambah
             </a>
         </div>
@@ -29,10 +29,9 @@
             <table id="dtDef" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                    <th>Judul</th>
-                    <th>Tgl Terbit</th>
-                    <th>Author</th>
-                    <th>Tags</th>
+                    <th>Nama Event</th>
+                    <th>Tanggal</th>
+                    <th>Lokasi</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -40,19 +39,18 @@
                 <?php
                 foreach ($data as $row) { ?>
                     <tr>
-                        <td><?= $row['title']; ?></td>
-                        <td><?= convertDate($row['created_at'], 'indo'); ?></td>
-                        <td><?= $row['fullname']; ?></td>
-                        <td><?= $row['tags']; ?></td>
+                        <td><?= $row['event_name']; ?></td>
+                        <td><?= convertDate($row['date_start'], 'indo') .' s/d '.convertDate($row['date_end'], 'indo'); ?></td>
+                        <td><?= $row['location']; ?></td>
                         <td>
-                            <a href="<?= 'news/detail/' . $row['url'] ?>" class="btn btn-info"
+                            <a href="<?= base_url('event/detail/') . $row['event_id'] ?>" class="btn btn-info"
                                data-toggle="tooltip" data-placement="top"
                                title="Detail Data">
                                 <i class="fa fa-eye"></i>
                             </a> &nbsp;
                             <button class="btn btn-danger x_BM_GetForm_AjaxSubmit"
-                                    x-targeturl="<?= 'news/modalDelete/' . $row['url'] ?>"
-                                    x-submiturl="<?= 'news/delete/' . $row['url'] ?>"
+                                    x-targeturl="<?= 'news/modalDelete/' . $row['event_id'] ?>"
+                                    x-submiturl="<?= 'news/delete/' . $row['event_id'] ?>"
                                     x-title=" Hapus Data" x-width="600px"
                                     x-postsubmit="Postsubmit" data-toggle="tooltip" data-placement="top"
                                     title="Hapus Data">

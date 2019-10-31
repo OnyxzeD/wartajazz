@@ -7,7 +7,11 @@ class User extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('Auth_model', 'General_model'));
+        if ($this->session->userdata('username')) {
+            $this->load->model(array('Auth_model', 'General_model'));
+        } else {
+            redirect(base_url('/'));
+        }
     }
 
     public function index()

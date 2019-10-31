@@ -40,7 +40,7 @@ class Auth_model extends CI_Model
         if ($cek) {
             if (password_verify($password, $cek['password'])) {
 
-                if ($type == 'mobile'){
+                if ($type == 'mobile') {
                     $this->db->set('token', $token);
                     $this->db->where('username', $username);
                     $this->db->update('users');
@@ -118,36 +118,11 @@ class Auth_model extends CI_Model
         /*if ($this->form_validation->run() == FALSE) {
             $result = ['Status' => 'error', 'Msg' => $this->form_validation->validation_errors_remaster()];
         } else {*/
-            $this->db->set('role_id', $data['role_id']);
-            $this->db->set('email', $data['email']);
-            if ($data['password'] != null || $data['password'] != ''){
-                $this->db->set('password', password_hash($data['password'], PASSWORD_DEFAULT));
-            }
-            $this->db->where('username', $data['username']);
-            $this->db->update('users');
-
-            $result = ['error' => true, 'message' => 'Proses Gagal'];
-            if ($this->db->affected_rows() > 0) {
-
-                $this->db->set('fullname', $data['fullname']);
-                $this->db->set('phone_number', $data['phone_number']);
-                $this->db->set('address', $data['address']);
-                $this->db->set('thumbnail', $data['thumbnail']);
-                $this->db->set('provider_id', $data['provider_id']);
-                $this->db->set('device_token', $data['device_token']);
-                $this->db->where('username', $data['username']);
-                $this->db->update('user_bio');
-
-                $result = ['error' => false, 'message' => 'Data Berhasil Diubah'];
-            }
-//        }
-
-        return $result;
-    }
-
-    public function edit($data)
-    {
-        $this->db->set('password', password_hash($data['password'], PASSWORD_DEFAULT));
+        $this->db->set('role_id', $data['role_id']);
+        $this->db->set('email', $data['email']);
+        if ($data['password'] != null || $data['password'] != '') {
+            $this->db->set('password', password_hash($data['password'], PASSWORD_DEFAULT));
+        }
         $this->db->where('username', $data['username']);
         $this->db->update('users');
 
@@ -157,9 +132,36 @@ class Auth_model extends CI_Model
             $this->db->set('fullname', $data['fullname']);
             $this->db->set('phone_number', $data['phone_number']);
             $this->db->set('address', $data['address']);
+            $this->db->set('thumbnail', $data['thumbnail']);
+            $this->db->set('provider_id', $data['provider_id']);
+            $this->db->set('device_token', $data['device_token']);
             $this->db->where('username', $data['username']);
             $this->db->update('user_bio');
 
+            $result = ['error' => false, 'message' => 'Data Berhasil Diubah'];
+        }
+//        }
+
+        return $result;
+    }
+
+    public function edit($data)
+    {
+        $result = ['error' => true, 'message' => 'Proses Gagal'];
+        if ($data['password'] != null || $data['password'] != '') {
+            $this->db->set('password', password_hash($data['password'], PASSWORD_DEFAULT));
+            $this->db->where('username', $data['username']);
+            $this->db->update('users');
+        }
+
+
+        $this->db->set('fullname', $data['fullname']);
+        $this->db->set('phone_number', $data['phone_number']);
+        $this->db->set('address', $data['address']);
+        $this->db->where('username', $data['username']);
+        $this->db->update('user_bio');
+
+        if ($this->db->affected_rows() > 0) {
             $result = ['error' => false, 'message' => 'Data Berhasil Diubah'];
         }
 

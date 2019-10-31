@@ -39,6 +39,8 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
     <link rel="stylesheet" href="<?= base_url('assets/') ?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     <!-- Select2 -->
     <link rel="stylesheet" href="<?= base_url('assets/') ?>bower_components/select2/dist/css/select2.css">
+    <!-- Bootstrap time Picker -->
+    <link rel="stylesheet" href="<?= base_url('assets/') ?>plugins/timepicker/bootstrap-timepicker.min.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -178,17 +180,58 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
 <script src="<?= base_url('assets/') ?>dist/js/app.js"></script>
 <!-- Select2 -->
 <script src="<?= base_url('assets/') ?>bower_components/select2/dist/js/select2.full.min.js"></script>
+<!-- bootstrap time picker -->
+<script src="<?= base_url('assets/') ?>plugins/timepicker/bootstrap-timepicker.js"></script>
 <script src="<?php echo $JScript ?>"></script>
 <script>
     $(function () {
-        $('#dtDef').DataTable();
+        $('#dtDef').DataTable({
+            "order": []
+        });
 
         //bootstrap WYSIHTML5 - text editor
         $('.wysiwyg').wysihtml5();
 
         //Initialize Select2 Elements
         $('.select2').select2();
-    })
+
+        $.fn.datepicker.dates['id'] = {
+            days: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+            daysShort: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+            daysMin: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+            months: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+            monthsShort: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
+            today: "Hari Ini",
+            clear: "Clear",
+            weekStart: 0
+        };
+        $('.datePicker').datepicker({
+            startDate: '-1y',
+            endDate: '0',
+            format: "dd MM yyyy",
+            autoclose: true,
+            language: 'id'
+            // daysOfWeekDisabled: [0, 6]
+        });
+
+        $('#reservationtime').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,
+            timePickerIncrement: 30,
+            locale: {
+                format: 'DD MMMM YYYY HH:mm',
+                /*weekLabel: "W",
+                daysOfWeek: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+                monthNames: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]*/
+            }
+        });
+
+        //Timepicker
+        $('.timepicker').timepicker({
+            showInputs: false,
+            showMeridian: false
+        })
+    });
 
     // validate number input
     function validateNumber(e) {
@@ -202,6 +245,23 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
         if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
             e.preventDefault();
         }
+    }
+
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, "").toString(),
+            split = number_string.split(","),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? "." : "";
+            rupiah += separator + ribuan.join(".");
+        }
+
+        rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+        return prefix == undefined ? rupiah : rupiah ? "Rp " + rupiah : "";
     }
 
     function Postsubmit(resp) {
@@ -219,15 +279,28 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
     }
 
     function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
 
-            reader.onload = function (e) {
-                $('#preview').attr('src', e.target.result);
-                $('#preview').attr('style', "width: 300px; height: auto");
-            };
+        var validExtensions = ['jpg','png','jpeg']; //array of valid extensions
+        var fileName = input.files[0].name;
+        var fileNameExt = fileName.substr(fileName.lastIndexOf('.') + 1);
+        if ($.inArray(fileNameExt, validExtensions) == -1) {
+            input.type = '';
+            input.type = 'file';
+            $('#user_img').attr('src',"");
+            alert("Only these file types are accepted : "+validExtensions.join(', '));
+        }
+        else
+        {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
 
-            reader.readAsDataURL(input.files[0]);
+                reader.onload = function (e) {
+                    $('#preview').attr('src', e.target.result);
+                    $('#preview').attr('style', "width: 300px; height: auto");
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
         }
     }
 </script>

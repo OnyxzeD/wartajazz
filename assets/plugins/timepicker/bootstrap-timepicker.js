@@ -1146,7 +1146,7 @@
     snapToStep: false,
     showSeconds: false,
     showInputs: true,
-    showMeridian: true,
+    showMeridian: false,
     template: 'dropdown',
     appendWidgetTo: 'body',
     showWidgetOnAddonClick: true,
