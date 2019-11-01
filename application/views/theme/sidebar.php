@@ -1,9 +1,10 @@
 <?php
 $method = $this->router->fetch_class();
 $Menu = [
-    'news'  => null,
-    'event' => null,
-    'user'  => null
+    'news'   => null,
+    'event'  => null,
+    'artist' => null,
+    'user'   => null
 ];
 $Menu[$method] = 'active';
 ?>
@@ -34,14 +35,19 @@ $Menu[$method] = 'active';
                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             </a>
         </li>
-<!--        <li class="--><?//= $Menu['news'] ?><!--">-->
-<!--            <a href="--><?//= base_url('news/'); ?><!--">-->
-<!--                <i class="fa fa-newspaper-o"></i> <span>Berita</span>-->
-<!--            </a>-->
-<!--        </li>-->
+        <!--        <li class="--><? //= $Menu['news'] ?><!--">-->
+        <!--            <a href="--><? //= base_url('news/'); ?><!--">-->
+        <!--                <i class="fa fa-newspaper-o"></i> <span>Berita</span>-->
+        <!--            </a>-->
+        <!--        </li>-->
         <li class="<?= $Menu['event'] ?>">
             <a href="<?= base_url('event/'); ?>">
                 <i class="fa fa-calendar"></i> <span>Event</span>
+            </a>
+        </li>
+        <li class="<?= $Menu['artist'] ?>">
+            <a href="<?= base_url('artist/'); ?>">
+                <i class="fa fa-microphone"></i> <span>Artist</span>
             </a>
         </li>
         <li class="<?= $Menu['user'] ?>">

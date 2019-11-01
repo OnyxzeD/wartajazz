@@ -32,7 +32,7 @@ class Auth_model extends CI_Model
         return $query->row_array();
     }
 
-    public function LoginCheck($username, $password, $type = 'web', $token)
+    public function LoginCheck($username, $password, $type = 'web', $token = null)
     {
         $cek = $this->get($username);
         $result['error'] = true;
