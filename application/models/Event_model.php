@@ -142,7 +142,7 @@ class Event_model extends CI_Model
 
         $event = $query->row_array();
         $event['date_start'] = convertDate($event['date_start'], 'indo');
-        $event['date_end'] = convertDate($event['date_start'], 'indo');
+        $event['date_end'] = convertDate($event['date_end'], 'indo');
         $event['htm'] = 'Rp ' . number_format($event['htm'], 0, ".", ".");
         if ($event['poster'] != null) {
             $event['poster'] = base_url() . '/assets/images/' . $event['poster'];
