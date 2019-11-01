@@ -19,6 +19,13 @@ function convertDate($data, $format)
             $converted = $date[2] . " " . $bulan[(int)($date[1]) - 1] . " " . $date[0];
         }
 
+    } else if ($format == 'indo2') {
+        $dt = explode(" ", $data);
+        $date = explode("-", $dt[0]);
+        $bulan = ['Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+
+        $converted = $date[2] . " " . $bulan[(int)($date[1]) - 1] . " " . $date[0];
+
     } else if ($format == 'db') {
         // convert input format to YYYY-mm-dd
         $date = explode(" ", $data);
@@ -40,7 +47,8 @@ function convertDate($data, $format)
     return $converted;
 }
 
-function convertRupiah($angka){
-    $hasil_rupiah = "Rp " . number_format($angka,0,',','.');
+function convertRupiah($angka)
+{
+    $hasil_rupiah = "Rp " . number_format($angka, 0, ',', '.');
     return $hasil_rupiah;
 }

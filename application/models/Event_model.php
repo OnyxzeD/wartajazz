@@ -102,8 +102,8 @@ class Event_model extends CI_Model
         $result = [];
         $data = $query->result_array();
         foreach ($data as $dt) {
-            $dt['date_start'] = convertDate($dt['date_start'], 'indo');
-            $dt['date_end'] = convertDate($dt['date_end'], 'indo');
+            $dt['date_start'] = convertDate($dt['date_start'], 'indo2');
+            $dt['date_end'] = convertDate($dt['date_end'], 'indo2');
             $dt['htm'] = 'Rp ' . number_format($dt['htm'], 0, ".", ".");
 
             if ($dt['poster'] != null) {
