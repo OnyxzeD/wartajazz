@@ -108,8 +108,12 @@ class Auth extends REST_Controller
                 'required'  => 'You have not provided %s.',
                 'is_unique' => '%s already exists.'
             ));
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[users.email]',
+            array(
+                'required'  => 'You have not provided %s.',
+                'is_unique' => '%s already exists.'
+            ));
         $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]');
-        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
         $this->form_validation->set_rules('fullname', 'Name', 'required|min_length[3]');
         $this->form_validation->set_rules('phone', 'Phone', 'required|numeric|min_length[10]|max_length[12]');
 

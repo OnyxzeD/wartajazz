@@ -22,7 +22,7 @@ class Event_model extends CI_Model
 
         $event = $query->row_array();
         if ($event['poster'] != null) {
-            $event['poster'] = base_url() . '/assets/images/'.$event['poster'];
+            $event['poster'] = base_url() . '/assets/images/' . $event['poster'];
         } else {
             $event['poster'] = base_url() . "assets/images/flyer.png";
         }
@@ -107,7 +107,7 @@ class Event_model extends CI_Model
             $dt['htm'] = 'Rp ' . number_format($dt['htm'], 0, ".", ".");
 
             if ($dt['poster'] != null) {
-                $dt['poster'] = base_url() . 'assets/images/'.$dt['poster'];
+                $dt['poster'] = base_url() . 'assets/images/' . $dt['poster'];
             } else {
                 $dt['poster'] = base_url() . "assets/images/flyer.png";
             }
@@ -141,8 +141,11 @@ class Event_model extends CI_Model
         $query = $this->db->get('events');
 
         $event = $query->row_array();
+        $event['date_start'] = convertDate($event['date_start'], 'indo');
+        $event['date_end'] = convertDate($event['date_start'], 'indo');
+        $event['htm'] = 'Rp ' . number_format($event['htm'], 0, ".", ".");
         if ($event['poster'] != null) {
-            $event['poster'] = base_url() . '/assets/images/'.$event['poster'];
+            $event['poster'] = base_url() . '/assets/images/' . $event['poster'];
         } else {
             $event['poster'] = base_url() . "assets/images/flyer.png";
         }
