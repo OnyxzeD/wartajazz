@@ -65,7 +65,7 @@ class Event extends CI_Controller
                 ];
 
 //                $result = $this->Event_model->add($data);
-                $this->db->insert('event', $data);
+                $this->db->insert('events', $data);
                 $event_id = $this->db->insert_id();
 
                 $sch = [];
