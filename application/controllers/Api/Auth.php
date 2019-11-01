@@ -70,7 +70,7 @@ class Auth extends REST_Controller
             $message = [
                 'error'   => false,
                 'message' => 'Welcome',
-                'user'    => $Login['data']
+                'data'    => $Login['data']
             ];
             $this->set_response($message, REST_Controller::HTTP_OK);
         } else {

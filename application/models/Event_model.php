@@ -22,9 +22,9 @@ class Event_model extends CI_Model
 
         $event = $query->row_array();
         if ($event['poster'] != null) {
-            $event['poster'] = base_url() . '/assets/images/events/'.$event['poster'];
+            $event['poster'] = base_url() . '/assets/images/'.$event['poster'];
         } else {
-            $event['poster'] = base_url() . "assets/dist/img/flyer.png";
+            $event['poster'] = base_url() . "assets/images/flyer.png";
         }
 
         $this->db->join('schedule', 'events.event_id = schedule.event_id');
@@ -107,9 +107,9 @@ class Event_model extends CI_Model
             $dt['htm'] = 'Rp ' . number_format($dt['htm'], 0, ".", ".");
 
             if ($dt['poster'] != null) {
-                $dt['poster'] = base_url() . 'assets/img/'.$dt['poster'];
+                $dt['poster'] = base_url() . 'assets/images/'.$dt['poster'];
             } else {
-                $dt['poster'] = base_url() . "assets/img/flyer.png";
+                $dt['poster'] = base_url() . "assets/images/flyer.png";
             }
 
             $this->db->join('schedule', 'events.event_id = schedule.event_id');
@@ -142,9 +142,9 @@ class Event_model extends CI_Model
 
         $event = $query->row_array();
         if ($event['poster'] != null) {
-            $event['poster'] = base_url() . '/assets/img/'.$event['poster'];
+            $event['poster'] = base_url() . '/assets/images/'.$event['poster'];
         } else {
-            $event['poster'] = base_url() . "assets/img/flyer.png";
+            $event['poster'] = base_url() . "assets/images/flyer.png";
         }
 
         $this->db->join('schedule', 'events.event_id = schedule.event_id');
