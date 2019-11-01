@@ -69,7 +69,7 @@ class Notif extends CI_Controller
 
     public function sendSingle()
     {
-        $user = $this->Auth_model->get_data($this->input->post('username'));
+        $user = $this->Auth_model->get($this->input->post('username'));
 
         return $this->send([$user['token']], $this->input->post('title'), $this->input->post('message'));
     }
