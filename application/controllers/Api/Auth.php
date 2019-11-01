@@ -119,11 +119,11 @@ class Auth extends REST_Controller
         $this->form_validation->set_rules('phone', 'Phone', 'required|numeric|min_length[10]|max_length[12]');
 
         if ($this->form_validation->run() == FALSE) {
-            $errs = [];
+            $errs = "";
             $err = explode("\n", validation_errors());
             foreach ($err as $v) {
                 if ($v != "") {
-                    $errs[] = strip_tags($v);
+                    $errs .= strip_tags($v)."\n";
                 }
             }
 
