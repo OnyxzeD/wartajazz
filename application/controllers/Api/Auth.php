@@ -239,4 +239,30 @@ class Auth extends REST_Controller
 
     }
 
+    public function updateToken_post()
+    {
+        $username = $this->post('username');
+        $token = $this->post('token');
+
+        $data = [
+            'username' => $username,
+            'token'    => $token,
+        ];
+
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('username', 'Username', 'required');
+
+        if ($this->form_validation->run() == FALSE) {
+            $message = [
+                'error'   => true,
+                'message' => $this->form_validation->validation_errors_remaster()
+            ];
+            $this->set_response($message, REST_Controller::HTTP_OK);
+        } else {
+            $register = $this->Auth_model->updateToken($data);
+            $this->set_response($register, REST_Controller::HTTP_OK);
+        }
+
+    }
+
 }

@@ -299,4 +299,18 @@ class Auth_model extends CI_Model
 
         return $query->result_array();
     }
+
+    public function updateToken($data)
+    {
+        $result = ['error' => true, 'message' => 'Proses Gagal'];
+        $this->db->set('token', $data['token']);
+        $this->db->where('username', $data['username']);
+        $this->db->update('users');
+
+        if ($this->db->affected_rows() > 0) {
+            $result = ['error' => false, 'message' => 'Token Updated'];
+        }
+
+        return $result;
+    }
 }
