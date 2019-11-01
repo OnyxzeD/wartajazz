@@ -4,7 +4,8 @@ $Menu = [
     'news'   => null,
     'event'  => null,
     'artist' => null,
-    'user'   => null
+    'user'   => null,
+    'notif'  => null
 ];
 $Menu[$method] = 'active';
 ?>
@@ -53,6 +54,11 @@ $Menu[$method] = 'active';
         <li class="<?= $Menu['user'] ?>">
             <a href="<?= base_url('user/'); ?>">
                 <i class="fa fa-users"></i> <span>Users</span>
+            </a>
+        </li>
+        <li class="<?= $Menu['notif'] ?>">
+            <a href="<?= base_url('notif/'); ?>">
+                <i class="fa fa-bell"></i> <span>Send Notif</span>
             </a>
         </li>
 

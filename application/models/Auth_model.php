@@ -280,13 +280,17 @@ class Auth_model extends CI_Model
         return $result;
     }
 
-    public function userList()
+    public function userList($type = 'all')
     {
         $this->db->join('user_bio', 'users.username = user_bio.username');
         $this->db->join('role', 'users.role_id = role.role_id');
         $this->db->select('users.*, user_bio.*, role.role_name');
         $this->db->from('users');
-        $this->db->where('users.role_id <>', 0);
+        if ($type == 'mobile'){
+            $this->db->where('users.role_id >=', 2);
+        } else {
+            $this->db->where('users.role_id <>', 0);
+        }
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -295,6 +299,7 @@ class Auth_model extends CI_Model
     {
         $this->db->select('users.token');
         $this->db->from('users');
+        $this->db->where('users.role_id >=', 2);
         $query = $this->db->get();
 
         return $query->result_array();

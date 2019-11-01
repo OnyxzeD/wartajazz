@@ -83,4 +83,26 @@ class Notif extends CI_Controller
         }
         return $this->send($ids, $this->input->post('title'), $this->input->post('message'));
     }
+
+    public function index()
+    {
+        $vars['header'] = 'Notification';
+        $vars['View'] = 'notif/send';
+        $vars['users'] = $this->Auth_model->userList('mobile');
+        $vars['JScript'] = base_url('assets/dist/js/Notif.js');
+        $this->load->view('theme/layout', $vars);
+    }
+
+    public function submit()
+    {
+        $type = $this->input->post('type');
+        if ($type == "all"){
+            $this->sendAll();
+        } else {
+            $this->sendSingle();
+        }
+
+        $this->session->set_flashdata('sukses', 'Notifikasi berhasil dikirim');
+        redirect(base_url('notif'));
+    }
 }
