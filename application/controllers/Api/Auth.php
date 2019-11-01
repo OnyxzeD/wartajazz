@@ -90,6 +90,7 @@ class Auth extends REST_Controller
         $email = $this->post('email');
         $fullname = $this->post('fullname');
         $phone = $this->post('phone');
+        $address = $this->post('address');
         $data = [
             'username'     => $username,
             'password'     => $password,
@@ -97,7 +98,7 @@ class Auth extends REST_Controller
             'fullname'     => $fullname,
             'phone_number' => $phone,
             'type'         => 2,
-            'address'      => null,
+            'address'      => $address,
             'token'        => $this->General_model->activationCode()
         ];
 
@@ -121,7 +122,7 @@ class Auth extends REST_Controller
             $errs = [];
             $err = explode("\n", validation_errors());
             foreach ($err as $v) {
-                if ($v != ""){
+                if ($v != "") {
                     $errs[] = strip_tags($v);
                 }
             }
