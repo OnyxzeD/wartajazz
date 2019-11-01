@@ -42,6 +42,17 @@ function convertDate($data, $format)
         } else {
             $converted = $date[2] . '-' . $month . '-' . $date[0];
         }
+    } else if ($format == 'dbEn') {
+        // convert input format to YYYY-mm-dd
+        $date = explode(" ", $data);
+        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $month = array_search($date[1], $bulan) + 1;
+
+        if ($month < 10) {
+            $converted = $date[2] . '-0' . $month . '-' . $date[0] . ' ' . $date[3] . ':00';
+        } else {
+            $converted = $date[2] . '-' . $month . '-' . $date[0] . ' ' . $date[3] . ':00';
+        }
     }
 
     return $converted;

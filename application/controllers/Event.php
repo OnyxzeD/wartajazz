@@ -37,52 +37,59 @@ class Event extends CI_Controller
 
     public function save()
     {
+        /*echo "<pre>";
+        print_r($sch);*/
         $this->load->library('upload');
-        if ($_FILES['thumbnail']['error'] != 4) {
-            $config['upload_path'] = './assets/images/news';
+        if ($_FILES['poster']['error'] != 4) {
+            $config['upload_path'] = './assets/images';
             $config['allowed_types'] = 'jpg|png|jpeg';
             $config['max_size'] = 2000;
-            $config['file_name'] = time() . '-' . $_FILES['thumbnail']['name'];
+            $config['file_name'] = time() . '-' . $_FILES['poster']['name'];
             $this->upload->initialize($config, TRUE);
 
-            if (!$this->upload->do_upload('thumbnail')) {
+            if (!$this->upload->do_upload('poster')) {
                 $this->session->set_flashdata('warning', 'Gagal upload gambar');
-                redirect(base_url('news/add'));
+                redirect(base_url('event/add'));
             } else {
-
-                $tags = "";
-                for ($i = 0; $i < count($_POST['tags']); $i++) {
-                    if (($i + 1) == count($_POST['tags'])) {
-                        $tags .= $_POST['tags'][$i];
-                    } else {
-                        $tags .= $_POST['tags'][$i] . ",";
-                    }
-                }
-
+                $tgl = explode(" - ", $_POST['tanggal']);
+                $str = str_replace("Rp ", "", $this->input->post('htm'));
                 $data = [
-                    'url'        => $this->General_model->randomString(),
-                    'title'      => $this->input->post('title'),
-                    'content'    => $this->input->post('content'),
-                    'tags'       => $tags,
-                    'thumbnail'  => $config['file_name'],
-                    'author'     => $this->session->userdata('username'),
-                    'created_at' => date("Y-m-d H:i:s"),
-                    'counter'    => 0
+                    'event_name'  => $this->input->post('event_name'),
+                    'location'    => $this->input->post('location'),
+                    'date_start'  => convertDate($tgl[0], 'dbEn'),
+                    'date_end'    => convertDate($tgl[1], 'dbEn'),
+                    'date_create' => date("Y-m-d H:i:s"),
+                    'author'      => $this->session->userdata('username'),
+                    'htm'         => str_replace(".", "", $str),
+                    'poster'      => $config['file_name'],
                 ];
 
-                $result = $this->News_model->add($data);
+//                $result = $this->Event_model->add($data);
+                $this->db->insert('event', $data);
+                $event_id = $this->db->insert_id();
 
-                if ($result) {
-                    $this->session->set_flashdata('sukses', 'Berhasil menambahkan berita');
-                    redirect(base_url('news'));
-                } else {
-                    $this->session->set_flashdata('warning', 'Gagal menambahkan berita');
-                    redirect(base_url('news/add'));
+                $sch = [];
+                for ($i = 0; $i < count($_POST['artist_id']); $i++) {
+                    $sch[] = array(
+                        'event_id'    => $event_id,
+                        'show_time'   => $_POST['show'][$i],
+                        'artist_id'   => $_POST['artist_id'][$i],
+                        'date_create' => date("Y-m-d H:i:s"),
+                        'user_id'     => 1,
+                    );
                 }
+
+                $this->db->insert_batch('schedule', $sch);
+
+                $this->load->library('Sendnotif', 'sendnotif');
+                $this->sendnotif->sendAll('Wartajazz - Info', $this->input->post('event_name') . ' di ' . $this->input->post('location'));
+
+                $this->session->set_flashdata('sukses', 'Berhasil menambahkan event');
+                redirect(base_url('event'));
             }
         } else {
             $this->session->set_flashdata('warning', 'Harap pilih foto');
-            redirect(base_url('news/add'));
+            redirect(base_url('event/add'));
         }
     }
 

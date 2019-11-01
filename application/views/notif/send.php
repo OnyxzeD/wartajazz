@@ -24,7 +24,7 @@
                                 <option value='single'>Salah satu</option>
                             </select>
                     </div>
-                    <div class="form-group col-md-10" id="userElem">
+                    <div class="form-group col-md-10" id="userElem" hidden>
                         <label>Pilih pengguna</label>
 
                         <div class="input-group date">

@@ -1,12 +1,9 @@
+var totalArtist = 2;
+var temp = 0;
 $(function () {
     var rupiah = document.getElementById("rupiah");
-    rupiah.addEventListener("keyup", function(e) {
+    rupiah.addEventListener("keyup", function (e) {
         rupiah.value = formatRupiah(this.value, "Rp ");
-    });
-
-    // $('.artist').is(':focus');
-    $('.artist').click(function() {
-        $('#modal_artist').modal();
     });
 });
 
@@ -36,18 +33,63 @@ function cekInput() {
     }
 }
 
-function setTime()
-{
+function setTime() {
     var tgl = $('#reservationtime').val();
     var t = tgl.split(" - ");
-    console.log(t[0]);
+    // console.log(t[0]);
     var d = new Date(t[0]);
-    $('.timepicker').each(function(){
+    $('.timepicker').each(function () {
         $(this).timepicker('setTime', d);
-        /*$(this).timepicker({
-            setTime: d,
-            showMeridian: false
-        });*/
-        d.setHours( d.getHours() + 1 );
+        d.setHours(d.getHours() + 1);
     });
+}
+
+function showModal(int) {
+    temp = int;
+    $('#modal_artist').modal();
+    console.log("artist : " + temp);
+}
+
+function pilih(id, artist) {
+    $('#artist-id-' + temp).val(id);
+    $('#artist-name-' + temp).val(artist);
+    temp = 0;
+    $('#modal_artist').modal('toggle');
+}
+
+function addElem() {
+    totalArtist++;
+    $("#artist-" + (totalArtist - 1)).after("" +
+        "<div id='artist-" + totalArtist + "'>" +
+        "   <div class='col-md-6'>" +
+        "       <div class='form-group'>" +
+        "           <label> &nbsp; </label>" +
+        "           <div class='input-group'>" +
+        "               <input type='hidden' id='artist-id-" + totalArtist + "' name='artist_id[]'>" +
+        "               <input type='text' id='artist-name-" + totalArtist + "' class='form-control pull-left artist' name='artist[]' onclick='showModal(" + totalArtist + ")'>" +
+        "               <div class='input-group-addon'>" +
+        "                   <i class='fa fa-user'></i>" +
+        "               </div>" +
+        "           </div>" +
+        "       </div>" +
+        "   </div>" +
+        "   <div class='col-md-6'>" +
+        "       <div class='form-group'>" +
+        "           <label> &nbsp; </label>" +
+        "           <div class='input-group'>" +
+        "               <input type='text' class='form-control timepicker' name='show[]'>" +
+        "               <div class='input-group-addon'>" +
+        "                   <i class='fa fa-clock-o'></i>" +
+        "               </div>" +
+        "           </div>" +
+        "       </div>" +
+        "   </div>" +
+        "</div>");
+
+    $('.timepicker').timepicker({
+        showInputs: false,
+        showMeridian: false
+    });
+
+    setTime();
 }

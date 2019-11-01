@@ -24,7 +24,7 @@
 <!--                <ul class="dropdown-menu">-->
 <!--                    <li class="header">You have 10 notifications</li>-->
 <!--                    <li>-->
-<!--                        <!-- inner menu: contains the actual data -->-->
+<!--                        <!-- inner menu: contains the actual data -->
 <!--                        <ul class="menu">-->
 <!--                            <li>-->
 <!--                                <a href="#">-->

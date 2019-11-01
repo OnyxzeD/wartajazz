@@ -7,25 +7,16 @@
                 <h3 class="box-title">Add Event</h3>
             </div>
             <!-- /.box-header -->
-            <div class="box-body">
-                <?php if ($this->session->flashdata('warning')) { ?>
-                    <div class="alert alert-warning alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-warning"></i> Perhatian!</h4>
-                        <?= $this->session->flashdata('warning'); ?>
-                    </div>
-                <?php } ?>
-                <!--<div class="box-group" id="accordion">
-                    <form role="form" action="<? /*= base_url('news/save') */ ?>" name="registration" method="post"
-                          enctype="multipart/form-data">
-                        <div class="box-footer">
-                            <button type="submit" name="submitTeacher" class="btn btn-primary">Simpan</button>
-                            <a href="<? /*= base_url('news') */ ?>" class="btn btn-default">Batal</a>
+            <form role="form" action="<?= base_url('event/save') ?>" name="registration" method="post"
+                  enctype="multipart/form-data">
+                <div class="box-body">
+                    <?php if ($this->session->flashdata('warning')) { ?>
+                        <div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4><i class="icon fa fa-warning"></i> Perhatian!</h4>
+                            <?= $this->session->flashdata('warning'); ?>
                         </div>
-                    </form>
-                </div>-->
-                <form role="form" action="<? /*= base_url('news/save') */ ?>" name="registration" method="post"
-                      enctype="multipart/form-data">
+                    <?php } ?>
                     <div class="box-group" id="accordion">
                         <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
                         <div class="panel box box-primary">
@@ -46,7 +37,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Lokasi</label>
-                                        <select class="form-control select2">
+                                        <select class="form-control select2" name="location">
                                             <option selected="selected" value="DKI Jakarta">DKI Jakarta</option>
                                             <option value="Bogor">Bogor</option>
                                             <option value="Depok">Depok</option>
@@ -62,7 +53,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Tanggal event</label>
-                                        <input type="text" class="form-control pull-right" id="reservationtime" name="tanggal" onchange="setTime()">
+                                        <input type="text" class="form-control pull-right" id="reservationtime"
+                                               name="tanggal" onchange="setTime()">
                                     </div>
                                     <!--<div class="form-group">
                                         <label for="exampleInputEmail1">Tanggal selesai</label>
@@ -105,7 +97,10 @@
                                             <label>Pilih bintang tamu</label>
 
                                             <div class="input-group date">
-                                                <input type="text" class="form-control pull-left artist">
+                                                <input type="hidden" id="artist-id-1" name="artist_id[]">
+                                                <input type="text" id="artist-name-1"
+                                                       class="form-control pull-left artist" name="artist[]"
+                                                       onclick="showModal(1)">
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-user"></i>
                                                 </div>
@@ -117,7 +112,7 @@
                                         <div class="form-group">
                                             <label> &nbsp; </label>
                                             <div class="input-group date">
-                                                <input type="text" class="form-control timepicker">
+                                                <input type="text" class="form-control timepicker" name="show[]">
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-clock-o"></i>
                                                 </div>
@@ -125,40 +120,51 @@
                                             <!-- /.input group -->
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label> &nbsp; </label>
+                                    <div id="artist-2">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label> &nbsp; </label>
 
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control pull-left artist">
-                                                <div class="input-group-addon">
-                                                    <i class="fa fa-user"></i>
+                                                <div class="input-group date">
+                                                    <input type="hidden" id="artist-id-2" name="artist_id[]">
+                                                    <input type="text" id="artist-name-2"
+                                                           class="form-control pull-left artist" name="artist[]"
+                                                           onclick="showModal(2)">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-user"></i>
+                                                    </div>
                                                 </div>
+                                                <!-- /.input group -->
                                             </div>
-                                            <!-- /.input group -->
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label> &nbsp; </label>
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control timepicker">
-                                                <div class="input-group-addon">
-                                                    <i class="fa fa-clock-o"></i>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label> &nbsp; </label>
+                                                <div class="input-group date">
+                                                    <input type="text" class="form-control timepicker" name="show[]">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-clock-o"></i>
+                                                    </div>
                                                 </div>
+                                                <!-- /.input group -->
                                             </div>
-                                            <!-- /.input group -->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <button type="button" id="addArtist" class="btn btn-block btn-primary">Tambah</button>
+                                        <button type="button" id="addArtist" class="btn btn-block btn-primary"
+                                                onclick="addElem()">Tambah bintang tamu
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+                <div class="box-footer">
+                    <button type="submit" name="submitTeacher" class="btn btn-primary">Simpan</button>
+                    <a href="<?= base_url('event') ?>" class="btn btn-default">Batal</a>
+                </div>
+            </form>
         </div>
         <!-- /.box -->
     </div>
@@ -192,7 +198,8 @@
                                 <td><?= $row['country_of_origin']; ?></td>
                                 <td>
                                     <button class="btn btn-info" data-toggle="tooltip" data-placement="top"
-                                            title="Pilih">
+                                            title="Pilih"
+                                            onclick="pilih('<?= $row['artist_id'] ?>', '<?= $row['artist_name'] ?>')">
                                         <i class="fa fa-check-square"></i>
                                     </button>
                                 </td>

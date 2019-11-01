@@ -291,6 +291,7 @@ class Auth_model extends CI_Model
         } else {
             $this->db->where('users.role_id <>', 0);
         }
+        $this->db->order_by('users.username', 'ASC');
         $query = $this->db->get();
         return $query->result_array();
     }
