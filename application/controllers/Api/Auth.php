@@ -6,6 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
+require APPPATH . 'libraries/MY_Form_validation.php';
 
 class Auth extends REST_Controller
 {
