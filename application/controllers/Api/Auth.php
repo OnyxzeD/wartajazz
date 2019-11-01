@@ -6,7 +6,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
-require APPPATH . 'libraries/MY_Form_validation.php';
 
 class Auth extends REST_Controller
 {
@@ -121,7 +120,7 @@ class Auth extends REST_Controller
         if ($this->form_validation->run() == FALSE) {
             $message = [
                 'error'   => true,
-                'message' => $this->form_validation->validation_errors_remaster()
+                'message' => $this->form_validation->validation_errors()
             ];
             $this->set_response($message, REST_Controller::HTTP_OK);
         } else {
