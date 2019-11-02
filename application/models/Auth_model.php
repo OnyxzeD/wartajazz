@@ -261,6 +261,10 @@ class Auth_model extends CI_Model
             if ($register) {
                 return $this->LoginCheck(strtolower($name[0]), 'google', 'mobile', $token);
             }
+        } else {
+            $this->db->set('thumbnail', $thumb);
+            $this->db->where('username', $data['username']);
+            $this->db->update('user_bio');
         }
 
         $result = [
@@ -268,8 +272,9 @@ class Auth_model extends CI_Model
             'message' => 'Login succeeded',
             'user'    => [
                 'user_id'      => (int)$data['user_id'],
+                'username'     => $data['username'],
                 'email'        => $data['email'],
-                'fullname'     => $displayName,
+                'fullname'     => $data['email'],
                 'phone_number' => $data['phone_number'],
                 'join_date'    => convertDate($data['join_date'], 'indo'),
                 'role'         => (int)$data['role_id'],
