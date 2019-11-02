@@ -240,7 +240,7 @@ class Auth_model extends CI_Model
     {
         $this->db->join('user_bio', 'users.username = user_bio.username');
         $this->db->where('users.email', $email);
-        $this->db->where('user_bio.provider_id', $providerId);
+//        $this->db->where('user_bio.provider_id', $providerId);
         $query = $this->db->get('users');
         $data = $query->row_array();
 

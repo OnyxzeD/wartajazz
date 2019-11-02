@@ -70,15 +70,15 @@
             </div>
         </form>
 
-<!--        <div class="social-auth-links text-center">-->
-            <!--<p>- OR -</p>
-            <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-plus"></i> Register a new
-                membership</a>-->
-            <!--<a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
-                Facebook</a>
-            <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
-                Google+</a>-->
-<!--        </div>-->
+        <!--        <div class="social-auth-links text-center">-->
+        <!--<p>- OR -</p>
+        <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-plus"></i> Register a new
+            membership</a>-->
+        <!--<a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
+            Facebook</a>
+        <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
+            Google+</a>-->
+        <!--        </div>-->
         <!-- /.social-auth-links -->
 
         <!--<a href="#">I forgot my password</a><br>
@@ -93,5 +93,10 @@
 <script src="<?= base_url('assets/'); ?>bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="<?= base_url('assets/'); ?>bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        $("input[name='username']").focus();
+    });
+</script>
 </body>
 </html>
