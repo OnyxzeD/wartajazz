@@ -274,7 +274,7 @@ class Auth_model extends CI_Model
                 'user_id'      => (int)$data['user_id'],
                 'username'     => $data['username'],
                 'email'        => $data['email'],
-                'fullname'     => $data['email'],
+                'fullname'     => $data['fullname'],
                 'phone_number' => $data['phone_number'],
                 'join_date'    => convertDate($data['join_date'], 'indo'),
                 'role'         => (int)$data['role_id'],
