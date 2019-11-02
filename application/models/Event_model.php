@@ -79,12 +79,15 @@ class Event_model extends CI_Model
         return false;
     }
 
-    public function delete($url)
+    public function delete($id)
     {
-        $this->db->where('url', $url);
-        $this->db->delete('news');
+        $this->db->where('event_id', $id);
+        $this->db->delete('schedule');
 
         if ($this->db->affected_rows() > 0) {
+            $this->db->where('event_id', $id);
+            $this->db->delete('events');
+
             return true;
         } else {
             return false;

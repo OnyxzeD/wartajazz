@@ -177,16 +177,16 @@ class Event extends CI_Controller
         }
     }
 
-    public function modalDelete($url)
+    public function modalDelete($id)
     {
-        $data = $this->News_model->detail($url);
-        $vars['data'] = "Berita <strong>" . $data['title'] . ' </strong>';
+        $data = $this->Event_model->detail($id);
+        $vars['data'] = "Event <strong>" . $data['event_name'] . ' </strong>';
         $this->load->view('modals/modal-delete', $vars);
     }
 
-    public function delete($url)
+    public function delete($id)
     {
-        $result = $this->News_model->delete($url);
+        $result = $this->Event_model->delete($id);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));

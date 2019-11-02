@@ -49,8 +49,8 @@
                                 <i class="fa fa-eye"></i>
                             </a> &nbsp;
                             <button class="btn btn-danger x_BM_GetForm_AjaxSubmit"
-                                    x-targeturl="<?= 'news/modalDelete/' . $row['event_id'] ?>"
-                                    x-submiturl="<?= 'news/delete/' . $row['event_id'] ?>"
+                                    x-targeturl="<?= 'event/modalDelete/' . $row['event_id'] ?>"
+                                    x-submiturl="<?= 'event/delete/' . $row['event_id'] ?>"
                                     x-title=" Hapus Data" x-width="600px"
                                     x-postsubmit="Postsubmit" data-toggle="tooltip" data-placement="top"
                                     title="Hapus Data">
