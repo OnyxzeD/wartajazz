@@ -236,7 +236,7 @@ class Auth_model extends CI_Model
         }
     }
 
-    public function googleAuth($providerId, $email, $displayName, $thumb)
+    public function googleAuth($providerId, $email, $displayName, $thumb, $token)
     {
         $this->db->join('user_bio', 'users.username = user_bio.username');
         $this->db->where('users.email', $email);
@@ -248,17 +248,18 @@ class Auth_model extends CI_Model
             $name = $dt = explode(" ", $displayName);
             $data = [
                 'username'     => strtolower($name[0]),
-                'password'     => "-",
+                'password'     => "google",
                 'email'        => $email,
                 'fullname'     => $displayName,
                 'phone_number' => "-",
+                'type'         => 3,
                 'address'      => "-",
                 'provider_id'  => $providerId,
                 'thumbnail'    => $thumb
             ];
             $register = $this->register($data, 3);
             if ($register) {
-                return $this->login(strtolower($name[0]), '-');
+                return $this->LoginCheck(strtolower($name[0]), 'google', 'mobile', $token);
             }
         }
 
@@ -286,7 +287,7 @@ class Auth_model extends CI_Model
         $this->db->join('role', 'users.role_id = role.role_id');
         $this->db->select('users.*, user_bio.*, role.role_name');
         $this->db->from('users');
-        if ($type == 'mobile'){
+        if ($type == 'mobile') {
             $this->db->where('users.role_id >=', 2);
         } else {
             $this->db->where('users.role_id <>', 0);

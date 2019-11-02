@@ -98,8 +98,7 @@ class Auth extends REST_Controller
             'fullname'     => $fullname,
             'phone_number' => $phone,
             'type'         => 2,
-            'address'      => $address,
-            'token'        => $this->General_model->activationCode()
+            'address'      => $address
         ];
 
         $this->load->library('form_validation');
@@ -123,7 +122,7 @@ class Auth extends REST_Controller
             $err = explode("\n", validation_errors());
             foreach ($err as $v) {
                 if ($v != "") {
-                    $errs .= strip_tags($v)."\n";
+                    $errs .= strip_tags($v) . "\n";
                 }
             }
 
@@ -272,6 +271,17 @@ class Auth extends REST_Controller
             $this->set_response($register, REST_Controller::HTTP_OK);
         }
 
+    }
+
+    public function googleAuth_post()
+    {
+        $providerId = $this->post('providerId');
+        $email = $this->post('email');
+        $displayName = $this->post('displayName');
+        $thumb = $this->post('thumbnail');
+        $token = $this->post('token');
+        $login = $this->Auth_model->googleAuth($providerId, $email, $displayName, $thumb, $token);
+        $this->set_response($login, REST_Controller::HTTP_OK);
     }
 
 }
