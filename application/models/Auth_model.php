@@ -154,7 +154,6 @@ class Auth_model extends CI_Model
             $this->db->update('users');
         }
 
-
         $this->db->set('fullname', $data['fullname']);
         $this->db->set('phone_number', $data['phone_number']);
         $this->db->set('address', $data['address']);
@@ -202,24 +201,16 @@ class Auth_model extends CI_Model
         }
     }
 
-    public function changePass()
+    public function resetPass($data)
     {
-        $id = $_POST['id'];
-        $current = $_POST['currentpassword'];
-        $new = $_POST['newpassword'];
-        $query = $this->detail($id);
-        if (password_verify($current, $query['Password']) == true) {
-            $this->db->set(array('Password' => password_hash($new, PASSWORD_DEFAULT)));
-            $this->db->where('Id', $id);
-            $this->db->update('users');
+        $this->db->set('password', password_hash($data['password'], PASSWORD_DEFAULT));
+        $this->db->where('email', $data['email']);
+        $this->db->update('users');
 
-            if ($this->db->affected_rows() > 0) {
-                return "changed";
-            } else {
-                return "error";
-            }
+        if ($this->db->affected_rows() > 0) {
+            return true;
         } else {
-            return "mismatch";
+            return false;
         }
     }
 

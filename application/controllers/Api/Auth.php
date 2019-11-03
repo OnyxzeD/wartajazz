@@ -24,6 +24,19 @@ class Auth extends REST_Controller
         $this->methods['users_delete']['limit'] = 50; // 50 requests per hour per user/key
     }
 
+    function validationError()
+    {
+        $errs = "";
+        $err = explode("\n", validation_errors());
+        foreach ($err as $v) {
+            if ($v != "") {
+                $errs .= strip_tags($v) . "\n";
+            }
+        }
+
+        return $errs;
+    }
+
     public function index_get()
     {
         $data = $this->Auth_model->usersList();
@@ -118,17 +131,9 @@ class Auth extends REST_Controller
         $this->form_validation->set_rules('phone', 'Phone', 'required|numeric|min_length[10]|max_length[12]');
 
         if ($this->form_validation->run() == FALSE) {
-            $errs = "";
-            $err = explode("\n", validation_errors());
-            foreach ($err as $v) {
-                if ($v != "") {
-                    $errs .= strip_tags($v) . "\n";
-                }
-            }
-
             $message = [
                 'error'   => true,
-                'message' => $errs
+                'message' => $this->validationError()
             ];
             $this->set_response($message, REST_Controller::HTTP_OK);
         } else {
@@ -225,7 +230,7 @@ class Auth extends REST_Controller
         if ($this->form_validation->run() == FALSE) {
             $message = [
                 'error'   => true,
-                'message' => $this->form_validation->validation_errors_remaster()
+                'message' => $this->validationError()
             ];
             $this->set_response($message, REST_Controller::HTTP_OK);
         } else {
@@ -282,6 +287,49 @@ class Auth extends REST_Controller
         $token = $this->post('token');
         $login = $this->Auth_model->googleAuth($providerId, $email, $displayName, $thumb, $token);
         $this->set_response($login, REST_Controller::HTTP_OK);
+    }
+
+    public function resetPass_post()
+    {
+        $email = $this->post('email');
+        $password = $this->post('password');
+
+        $data = [
+            'email'    => $email,
+            'password' => $password
+        ];
+
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('email', 'Email', 'required');
+        $this->form_validation->set_rules('password', 'Password', 'min_length[6]');
+        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required|matches[password]', [
+            'matches' => 'Password Confirmation is not match',
+        ]);
+
+        if ($this->form_validation->run() == FALSE) {
+            $message = [
+                'error'   => true,
+                'message' => $this->validationError()
+            ];
+            $this->set_response($message, REST_Controller::HTTP_OK);
+        } else {
+            $register = $this->Auth_model->resetPass($data);
+            if ($register) {
+                $message = [
+                    'error'   => false,
+                    'message' => 'Update Successful '
+                ];
+                $this->set_response($message, REST_Controller::HTTP_OK);
+            } else {
+                $message = [
+                    'error'   => true,
+                    'message' => 'Something Gone Wrong'
+                ];
+                $this->set_response($message, REST_Controller::HTTP_OK);
+            }
+        }
+
     }
 
 }
