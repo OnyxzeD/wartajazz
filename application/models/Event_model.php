@@ -22,7 +22,7 @@ class Event_model extends CI_Model
 
         $event = $query->row_array();
         if ($event['poster'] != null) {
-            $event['poster'] = base_url() . '/assets/images/' . $event['poster'];
+            $event['poster'] = base_url() . 'assets/images/' . $event['poster'];
         } else {
             $event['poster'] = base_url() . "assets/images/flyer.png";
         }
