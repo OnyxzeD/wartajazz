@@ -238,14 +238,14 @@ class Auth_model extends CI_Model
 
     public function googleAuth($providerId, $email, $displayName, $thumb, $token)
     {
+        $name = $dt = explode(" ", $displayName);
         $this->db->join('user_bio', 'users.username = user_bio.username');
         $this->db->where('users.email', $email);
-//        $this->db->where('user_bio.provider_id', $providerId);
+        $this->db->where('users.username', strtolower($name[0]));
         $query = $this->db->get('users');
-        $data = $query->row_array();
+        $dataUser = $query->row_array();
 
-        if ($data == null) {
-            $name = $dt = explode(" ", $displayName);
+        if ($dataUser == null) {
             $data = [
                 'username'     => strtolower($name[0]),
                 'password'     => "google",
@@ -263,24 +263,14 @@ class Auth_model extends CI_Model
             }
         } else {
             $this->db->set('thumbnail', $thumb);
-            $this->db->where('username', $data['username']);
+            $this->db->where('username', $dataUser['username']);
             $this->db->update('user_bio');
         }
 
         $result = [
             'error'   => false,
-            'message' => 'Login succeeded',
-            'user'    => [
-                'user_id'      => (int)$data['user_id'],
-                'username'     => $data['username'],
-                'email'        => $data['email'],
-                'fullname'     => $data['fullname'],
-                'phone_number' => $data['phone_number'],
-                'join_date'    => convertDate($data['join_date'], 'indo'),
-                'role'         => (int)$data['role_id'],
-                'thumbnail'    => $data['thumbnail']
-            ]
-
+            'message' => 'Google login succeeded',
+            'data'    => $dataUser
         ];
 
         return $result;

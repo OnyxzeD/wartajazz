@@ -148,7 +148,7 @@ class Event_model extends CI_Model
         $event['date_end'] = convertDate($event['date_end'], 'indo');
         $event['htm'] = 'Rp ' . number_format($event['htm'], 0, ".", ".");
         if ($event['poster'] != null) {
-            $event['poster'] = base_url() . '/assets/images/' . $event['poster'];
+            $event['poster'] = base_url() . 'assets/images/' . $event['poster'];
         } else {
             $event['poster'] = base_url() . "assets/images/flyer.png";
         }
