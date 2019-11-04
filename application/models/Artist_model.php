@@ -67,4 +67,12 @@ class Artist_model extends CI_Model
             return false;
         }
     }
+
+    function getMonthly()
+    {
+        $this->db->from('artist');
+        $this->db->where("DATE_FORMAT(date_create,'%Y-%m')", date("Y-m"));
+//        $query = $this->db->get();
+        return $this->db->count_all_results();
+    }
 }

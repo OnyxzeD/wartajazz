@@ -73,13 +73,13 @@
 
                         <p>
                             <?= $this->session->userdata('name')?>
-                            <small>Member since <?= $this->session->userdata('join_date')?></small>
+                            <small>Member since <?= convertDate($this->session->userdata('join_date'), 'indo')?></small>
                         </p>
                     </li>
                     <!-- Menu Footer-->
                     <li class="user-footer">
                         <div class="pull-left">
-                            <a href="#" class="btn btn-default btn-flat">Profile</a>
+                            <a href="<?= base_url('dashboard/profile'); ?>" class="btn btn-default btn-flat">Profile</a>
                         </div>
                         <div class="pull-right">
                             <a href="<?= base_url('dashboard/logout'); ?>" class="btn btn-default btn-flat">Sign out</a>

@@ -1,11 +1,12 @@
 <?php
 $method = $this->router->fetch_class();
 $Menu = [
-    'news'   => null,
-    'event'  => null,
-    'artist' => null,
-    'user'   => null,
-    'notif'  => null
+    'dashboard' => null,
+    'news'      => null,
+    'event'     => null,
+    'artist'    => null,
+    'user'      => null,
+    'notif'     => null
 ];
 $Menu[$method] = 'active';
 ?>
@@ -31,7 +32,7 @@ $Menu[$method] = 'active';
     <!-- sidebar menu: : style can be found in sidebar.less -->
     <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
-        <li>
+        <li class="<?= $Menu['dashboard'] ?>">
             <a href="<?= base_url('dashboard/'); ?>">
                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             </a>

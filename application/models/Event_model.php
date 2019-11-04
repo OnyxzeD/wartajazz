@@ -52,6 +52,18 @@ class Event_model extends CI_Model
         $this->db->join('user_bio', 'events.author = user_bio.username');
         $this->db->select('events.*, user_bio.fullname');
         $this->db->from('events');
+        $this->db->order_by('events.date_start','desc');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getMonthly()
+    {
+        $this->db->join('user_bio', 'events.author = user_bio.username');
+        $this->db->select('events.*, user_bio.fullname');
+        $this->db->from('events');
+        $this->db->where("DATE_FORMAT(events.date_start,'%Y-%m')", date("Y-m"));
+        $this->db->order_by('events.date_start','desc');
         $query = $this->db->get();
         return $query->result_array();
     }

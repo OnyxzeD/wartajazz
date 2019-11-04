@@ -306,4 +306,12 @@ class Auth_model extends CI_Model
 
         return $result;
     }
+
+    function getMonthly()
+    {
+        $this->db->from('user_bio');
+        $this->db->where("DATE_FORMAT(join_date,'%Y-%m')", date("Y-m"));
+//        $query = $this->db->get();
+        return $this->db->count_all_results();
+    }
 }
