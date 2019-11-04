@@ -40,7 +40,6 @@ class User extends CI_Controller
             'phone_number' => null,
             'address'      => null,
             'token'        => $this->General_model->activationCode(),
-            'device_token' => null,
             'provider_id'  => null,
             'thumbnail'    => null
         ];
@@ -94,13 +93,7 @@ class User extends CI_Controller
             'password'     => $this->input->post('password'),
             'email'        => $this->input->post('email'),
             'role_id'      => $this->input->post('role'),
-            'fullname'     => $this->input->post('fullname'),
-            'phone_number' => null,
-            'address'      => null,
-            'token'        => $this->General_model->activationCode(),
-            'device_token' => null,
-            'provider_id'  => null,
-            'thumbnail'    => null
+            'fullname'     => $this->input->post('fullname')
         ];
         $result = $this->Auth_model->update($data);
         $this->output
