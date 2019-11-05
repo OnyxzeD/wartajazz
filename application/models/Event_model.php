@@ -29,7 +29,7 @@ class Event_model extends CI_Model
 
         $this->db->join('schedule', 'events.event_id = schedule.event_id');
         $this->db->join('artist', 'artist.artist_id = schedule.artist_id');
-        $this->db->select('events.event_id, schedule.show_time, artist.artist_name, artist.country_of_origin');
+        $this->db->select('events.event_id, schedule.show_time, artist.artist_id, artist.artist_name, artist.country_of_origin');
         $this->db->from('events');
         $this->db->where('events.event_id', $id);
         $this->db->order_by('event_id', 'ASC');
@@ -68,23 +68,14 @@ class Event_model extends CI_Model
         return $query->result_array();
     }
 
-    public function add($data)
-    {
-        $save = $this->db->insert('news', $data);
-
-        if ($save) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
     public function update($data)
     {
-        $this->db->where('url', $data['url']);
-        $this->db->update('news', $data);
+        $this->db->where('event_id', $data['event_id']);
+        $this->db->update('events', $data);
         if ($this->db->affected_rows() > 0) {
+            //reschedule event
+            $this->db->where('event_id', $data['event_id']);
+            $this->db->delete('schedule');
             return true;
         }
 

@@ -1,4 +1,4 @@
-var totalArtist = 2;
+var totalArtist;
 var temp = 0;
 $(function () {
     var rupiah = document.getElementById("rupiah");
@@ -7,16 +7,20 @@ $(function () {
     });
 
     $('#reservationtime').daterangepicker({
+        autoUpdateInput: false,
         timePicker: true,
         timePicker24Hour: true,
         timePickerIncrement: 30,
         locale: {
-            format: 'DD MMMM YYYY HH:mm',
-            /*weekLabel: "W",
-            daysOfWeek: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
-            monthNames: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]*/
+            format: 'DD MMMM YYYY HH:mm'
         }
     });
+
+    $('#reservationtime').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD MMMM YYYY HH:mm') + ' - ' + picker.endDate.format('DD MMMM YYYY HH:mm'));
+    });
+
+    console.log(totalArtist);
 });
 
 function Postsubmit(resp) {
@@ -75,7 +79,7 @@ function addElem() {
         "<div id='artist-" + totalArtist + "'>" +
         "   <div class='col-md-6'>" +
         "       <div class='form-group'>" +
-        "           <label> &nbsp; </label>" +
+        "           <label>Pilih bintang tamu</label>" +
         "           <div class='input-group'>" +
         "               <input type='hidden' id='artist-id-" + totalArtist + "' name='artist_id[]'>" +
         "               <input type='text' id='artist-name-" + totalArtist + "' class='form-control pull-left artist' name='artist[]' onclick='showModal(" + totalArtist + ")'>" +
@@ -112,8 +116,8 @@ function addElem() {
         showInputs: false,
         showMeridian: false
     });
-
-    setTime();
+    //
+    // setTime();
 }
 
 function removeElem(number) {

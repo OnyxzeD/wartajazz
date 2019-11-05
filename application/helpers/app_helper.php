@@ -53,6 +53,20 @@ function convertDate($data, $format)
         } else {
             $converted = $date[2] . '-' . $month . '-' . $date[0] . ' ' . $date[3] . ':00';
         }
+    } else if ($format == 'time'){
+        $time = explode(":", $data);
+        $converted = $time[0] . ":" . $time[1];
+    } else if ($format == 'eng'){
+        $dt = explode(" ", $data);
+        $date = explode("-", $dt[0]);
+        $bulan = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        if (isset($dt[1])) {
+            $time = explode(":", $dt[1]);
+            $converted = $date[2] . " " . $bulan[(int)($date[1]) - 1] . " " . $date[0] . " " . $time[0] . ":" . $time[1];
+        } else {
+            $converted = $date[2] . " " . $bulan[(int)($date[1]) - 1] . " " . $date[0];
+        }
     }
 
     return $converted;

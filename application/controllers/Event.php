@@ -44,7 +44,8 @@ class Event extends CI_Controller
             $config['upload_path'] = './assets/images';
             $config['allowed_types'] = 'jpg|png|jpeg';
             $config['max_size'] = 2000;
-            $config['file_name'] = time() . '-' . $_FILES['poster']['name'];
+//            $config['file_name'] = time() . '-' . $_FILES['poster']['name'];
+            $config['file_name'] = $_FILES['poster']['name'];
             $this->upload->initialize($config, TRUE);
 
             if (!$this->upload->do_upload('poster')) {
@@ -98,11 +99,7 @@ class Event extends CI_Controller
         $vars['header'] = '';
         $vars['View'] = 'event/detail';
         $vars['data'] = $this->Event_model->detail($id);
-//            $vars['JScript'] = base_url('assets/office/js/Partner/Outlet.js');
         $vars['JScript'] = '';
-
-        /*echo "<pre>";
-        print_r($vars['data']);*/
 
         if ($vars['data'] != null) {
             $this->load->view('theme/layout', $vars);
@@ -111,69 +108,82 @@ class Event extends CI_Controller
         }
     }
 
-    public function edit($url)
+    public function edit($id)
     {
         $vars['header'] = '';
-        $vars['View'] = 'news/edit';
-//            $vars['JScript'] = base_url('assets/office/js/Partner/Outlet.js');
-        $vars['JScript'] = '';
-        $vars['data'] = $this->News_model->detail($url);
+        $vars['View'] = 'event/edit';
+        $vars['JScript'] = base_url('assets/dist/js/updateEvent.js');
+        $vars['data'] = $this->Event_model->detail($id);
+        $vars['artists'] = $this->General_model->getData('artist');
 
+        /*echo "<pre>";
+        print_r($vars['data']);*/
         if ($vars['data'] != null) {
-            $vars['tags'] = explode(",", $vars['data']['tags']);
             $this->load->view('theme/layout', $vars);
         } else {
-            redirect(base_url('news'));
+            redirect(base_url('event'));
         }
     }
 
     public function update()
     {
-        $tags = "";
-        for ($i = 0; $i < count($_POST['tags']); $i++) {
-            if (($i + 1) == count($_POST['tags'])) {
-                $tags .= $_POST['tags'][$i];
-            } else {
-                $tags .= $_POST['tags'][$i] . ",";
-            }
-        }
+        /*echo $this->input->post('tanggal');
+        $tgl = explode(" - ", $this->input->post('tanggal'));
+        print_r($tgl);*/
 
-        $data = [
-            'url'        => $this->input->post('url'),
-            'title'      => $this->input->post('title'),
-            'content'    => $this->input->post('content'),
-            'tags'       => $tags,
-            'updated_at' => date("Y-m-d H:i:s"),
+
+        $tgl = explode(" - ", $this->input->post('tanggal'));
+        $str = str_replace("Rp ", "", $this->input->post('htm'));
+        $event = [
+            'event_id'    => $this->input->post('event_id'),
+            'event_name'  => $this->input->post('event_name'),
+            'location'    => $this->input->post('location'),
+            'date_start'  => convertDate($tgl[0], 'dbEn'),
+            'date_end'    => convertDate($tgl[1], 'dbEn'),
+            'date_create' => date("Y-m-d H:i:s"),
+            'author'      => $this->session->userdata('username'),
+            'htm'         => str_replace(".", "", $str),
         ];
 
-        /*print_r($data);
-        echo $_FILES['thumbnail']['error'];*/
+        $sch = [];
+        for ($i = 0; $i < count($_POST['artist_id']); $i++) {
+            $sch[] = array(
+                'event_id'    => $this->input->post('event_id'),
+                'show_time'   => $_POST['show'][$i],
+                'artist_id'   => $_POST['artist_id'][$i],
+                'date_create' => date("Y-m-d H:i:s"),
+                'user_id'     => 1,
+            );
+        }
 
-        if ($_FILES['thumbnail']['error'] != 4) {
+        if ($_FILES['poster']['error'] != 4) {
             $this->load->library('upload');
 
-            $config['upload_path'] = './assets/images/news';
+            $config['upload_path'] = './assets/images';
             $config['allowed_types'] = 'jpg|png|jpeg';
             $config['max_size'] = 2000;
-            $config['file_name'] = time() . '-' . $_FILES['thumbnail']['name'];
+//            $config['file_name'] = time() . '-' . $_FILES['poster']['name'];
+            $config['file_name'] = $_FILES['poster']['name'];
             $this->upload->initialize($config, TRUE);
 
-            if (!$this->upload->do_upload('thumbnail')) {
+            if (!$this->upload->do_upload('poster')) {
                 $this->session->set_flashdata('warning', 'Gagal upload gambar');
-                redirect(base_url('news/edit/') . $data['url']);
+                redirect(base_url('event/edit/') . $event['event_id']);
             } else {
-                $data['thumbnail'] = $config['file_name'];
+                $event['poster'] = $config['file_name'];
             }
         }
 
-        $result = $this->News_model->update($data);
+        $result = $this->Event_model->update($event);
 
         if ($result) {
-            $this->session->set_flashdata('sukses', 'Berhasil ubah berita');
-            redirect(base_url('news'));
+            //reschedule event
+            $this->db->insert_batch('schedule', $sch);
+            $this->session->set_flashdata('sukses', 'Event berhasil diubah');
+            redirect(base_url('event'));
         } else {
-            $this->session->set_flashdata('warning', 'Gagal ubah berita');
-            redirect(base_url('news/edit/') . $data['url']);
+            $this->session->set_flashdata('warning', 'Event gagal diubah');
+            redirect(base_url('event/edit/') . $event['event_id']);
         }
     }
 

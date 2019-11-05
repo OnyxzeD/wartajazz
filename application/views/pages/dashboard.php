@@ -24,7 +24,7 @@
                 <p>Artist / Band Jazz Baru</p>
             </div>
             <div class="icon">
-                <i class="ion ion-person-add"></i>
+                <i class="ion ion-mic-a"></i>
             </div>
             <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>

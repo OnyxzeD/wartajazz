@@ -214,18 +214,6 @@ $basedir = dirname($_SERVER["SCRIPT_FILENAME"]) . '/';
             // daysOfWeekDisabled: [0, 6]
         });
 
-        $('#reservationtime').daterangepicker({
-            timePicker: true,
-            timePicker24Hour: true,
-            timePickerIncrement: 30,
-            locale: {
-                format: 'DD MMMM YYYY HH:mm',
-                /*weekLabel: "W",
-                daysOfWeek: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
-                monthNames: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]*/
-            }
-        });
-
         //Timepicker
         $('.timepicker').timepicker({
             showInputs: false,
